@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport"
+          content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+    <!--inital-scale初始缩放比例;user-scalable是否可以手动缩放-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!--全屏显示内容-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    <!--手机顶部状态栏样式-->
+    <meta name="format-detection" content="telephone=no">
+    <!--禁止出现的数字转化为拨号链接-->
+    <title>刮刮卡</title>
+    <link href="./styles/activity-style.css" rel="stylesheet" type="text/css">
+    <script src="./js/jquery.js" type="text/javascript"></script>
+    <script src="./js/wScratchPad.js" type="text/javascript"></script>
+</head>
+<body data-role="page" class="activity-scratch-card-winning">
+<!--刮刮卡插件-->
+<div class="main">
+    <div class="cover">
+        <img src="./images/activity-scratch-card-bannerbg.png">
+        <div id="prize">
+        </div>
+        <div id="scratchpad">
+        </div>
+    </div>
+    <div class="content">
+        <div id="zjl" style="display:none" class="boxcontent boxwhite">
+            <div class="box">
+                <div class="title-red">
+							<span>
+								恭喜你中奖了
+							</span>
+                </div>
+                <div class="Detail">
+                    <p>
+                        你中了：
+								<span class="red" id="prizename">
+									一等奖
+								</span>
+                    </p>
+
+                    <p>
+                        兑奖SN码：
+								<span class="red" id="sncode">
+									1232134
+								</span>
+                    </p>
+
+                    <p class="red"></p>
+
+                    <p>
+                        <input name="" class="px" id="tel" value="" type="text" placeholder="用户请输入您的手机号">
+                    </p>
+
+                    <p>
+
+                    <p>
+                        <input class="pxbtn" name="提 交" id="save-btn" type="button" value="用户提交">
+                    </p>
+
+                    <p>
+                        <input name="" class="px" id="parssword" type="password" value="" placeholder="商家输入兑奖密码">
+                    </p>
+
+                    <p>
+                        <input class="pxbtn" name="提 交" id="save-btnn" type="button" value="商家提交">
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="boxcontent boxwhite">
+            <div class="box">
+                <div class="title-brown">
+							<span>
+								奖项设置：
+							</span>
+                </div>
+                <div class="Detail">
+                    <p>
+                        一等奖： 苹果手机8。奖品数量：60
+                    </p>
+
+                    <p>
+                        二等奖： 苹果手机7 。奖品数量：100
+                    </p>
+
+                    <p>
+                        三等奖： 苹果手机6 。奖品数量：200
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="boxcontent boxwhite">
+            <div class="box">
+                <div class="title-brown">
+                    活动说明：
+                </div>
+                <div class="Detail">
+                    <p class="red">
+                        本次活动总共可以刮5次,你已经刮了0次,机会如果没用完重新进入本页面可以再刮!
+                    </p>
+
+                    <p>
+                        亲，请点击进入刮刮奖活动页面，祝您好运哦！本源码由楚盟博客收集整理 http://www.5yun.org
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="clear:both;">
+    </div>
+</div>
+<!--<script src="index/js/alert.js" type="text/javascript"></script>-->
+<script type="text/javascript">
+    $(function () {
+        var num = 1;
+        var total = 1;//"后台返回一共参与的次数";
+        $("#scratchpad").wScratchPad({//执行刮奖区域方法
+            width: 150,//刮奖区宽度
+            height: 40,
+            color: "#a9a9a7",//刮奖区域覆盖背景颜色
+//                    cursor:'crosshair',//鼠标形状
+            scratchDown: function () {
+                //鼠标按下去时
+            },
+            scratchUp: function () {
+                //鼠标按下松开时
+            },
+            scratchMove: function (e, percent) {//鼠标点击开刮
+                //参数:percent 刮开的百分比,e:当前事件对象
+                if (percent >= 20) {
+                    if (num != 1)return false;//多次刮卡提交一次请求
+                    if(total>5) alert("本次活动总共可以刮5次,你已经刮了5次!");
+                    $.post("prize.json", {}, function (data) {//请求后台返回奖项名称
+                        document.getElementById("prize").innerHTML = "data.prizeName";//
+                        /*A 谢谢参与*/
+                        if(data.err!=1){
+                         return false;
+                         }
+                        /*B 中奖*/
+                        document.getElementById("prizename").innerHTML = data.obj.prize;//
+                        document.getElementById("sncode").innerHTML = data.obj.sncode;
+                        $("#zjl").slideDown("fast");//显示中奖信息 你中了XXX
+                        num++;//记录刮了几次,防止打开页面多次刮多次请求
+                        total++//记录参与活动几次用,一共可以5次
+                    },"json");
+                }
+            }
+        });
+
+        //$("#prize").html("谢谢参与");
+        //loadingObj.hide();
+        //$(".loading-mask").remove();
+    });
+
+    $("#save-btn").on("click", function () {//中奖信息区域 用户提交按钮
+        var btn = $(this);
+        var tel = $("#tel").val();
+        if (tel == '') {
+            alert("请输入手机号");
+            return
+        }
+
+        var submitData = {
+            tid: 438,
+            code: $("#sncode").text(),
+            tel: tel,
+            action: "setTel"
+        };
+        $.post('index.php?ac=acw', submitData, function (data) {
+                    if (data.success == true) {
+                        alert(data.msg);
+                        return
+                    } else {
+                    }
+                },
+                "json")
+    });
+
+    // 保存数据
+    $("#save-btnn").on("click", function () {//中奖信息区域 商家提交按钮
+        //var btn = $(this);
+        var submitData = {
+            tid: 438,
+            code: $("#sncode").text(),
+            parssword: $("#parssword").val(),
+            action: "setTel"
+        };
+        $.post('index.php?ac=acw', submitData,
+                function (data) {
+                    if (data.success == true) {
+                        alert(data.msg);
+                        if (data.changed == true) {
+                            window.location.href = location.href;
+                        }
+                        return
+                    } else {
+                    }
+                },
+                "json")
+    });
+</script>
+</body>
+</html>
