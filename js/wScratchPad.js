@@ -264,10 +264,10 @@
             $this.ctx.strokeStyle = $this.settings.color;
             $this.ctx.lineWidth = $this.settings.size;
             //draw single dot in case of a click without a move
-            $this.ctx.beginPath();
-            $this.ctx.arc(e.pageX, e.pageY, $this.settings.size / 2, 0, Math.PI * 2, true);
-            $this.ctx.closePath();
-            $this.ctx.fill();
+            // $this.ctx.beginPath();
+            // $this.ctx.arc(e.pageX, e.pageY, $this.settings.size / 2, 0, Math.PI * 2, true);
+            // $this.ctx.closePath();
+            // $this.ctx.fill();
 
             //start the path for a drag
             $this.ctx.beginPath();
