@@ -60,7 +60,6 @@
 
             elem.data('_wScratchPad', sp);
             sp.init();
-            $settings.callback(sp);
         });
     };
 
@@ -75,8 +74,7 @@
         scratchDown: null, // scratchDown callback
         scratchUp: null, // scratchUp callback
         scratchMove: null, // scratcMove callback
-        cursor: null, // Set path to custom cursor
-        callback:function(){}
+        cursor: null // Set path to custom cursor
     };
 
     function ScratchPad(settings, elem) {
@@ -223,10 +221,10 @@
             var $this = this;
             var img = new Image();
             img.src = imagePath;
-            $(img).load(function() {
+            img.onload=function() {
                 $this.ctx.drawImage(img, 0, 0);
                 $this.setBgImage();
-            })
+            }
         },
 
         scratchFunc: function(e, $this, event) {
