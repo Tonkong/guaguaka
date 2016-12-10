@@ -213,7 +213,7 @@
 
         setBgImage: function() {
             if (this.settings.image) {
-                this.sp.css({ backgroundImage: 'url(' + this.settings.image + ')' });
+                this.sp.css({ backgroundImage: 'url(' + this.settings.image + ')',backgroundSize:'100% 100%' });
             }
         },
 
@@ -222,7 +222,7 @@
             var img = new Image();
             img.src = imagePath;
             img.onload=function() {
-                $this.ctx.drawImage(img, 0, 0);
+                $this.ctx.drawImage(img, 0, 0, $this.settings.width, $this.settings.height);
                 $this.setBgImage();
             }
         },
